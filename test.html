@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BI</title>
+
+</head>
+<body>
+
+<div id="app">
+    {{id}}
+    
+</div>
+
+<script src="./js/vue.min.js"></script>
+<script>
+        var conditions = {
+            id:'aaaaaa',
+            conf:{
+                id: 111,
+                condition_list:[
+                    {
+                        col:'date',
+                        name:'日期',
+                        //method:sum|left|avg|count
+                    },
+                    {
+                        col:'source',
+                        name:'市场',
+                    },
+                    {
+                        col:'shop_type',
+                        name:'渠道',
+                    },
+                    {
+                        col:'sales',
+                        name:'销售额',
+                        method:'sum'
+                    },
+                ]
+
+            },
+            select:[
+                'col_name1',
+                {
+                    condition:'sum', //sum/avg/count
+                    name: 'col_name2_remane',
+                    col: 'col_name2'
+                }
+            ],
+            // from:'table_name',
+            where: [
+                {
+                    col:'col_name1',
+                    filter:[1,2,3]
+                },
+                {
+                    col:'col_name2',
+                    filter:[1,2,3]
+                },
+
+            ],
+            groupby: [ 'col_name1', 'col_name2' ]
+        };
+
+            
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                id:'aaaaaaa'
+            },
+            mounted:function(){
+                alert()
+            }
+        });
+
+    </script>
+</body>
+</html>

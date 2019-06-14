@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BI</title>
+
+<link rel="stylesheet" href="css/bootstrap-3.3.6-dist/css/bootstrap.css"/>
+<link rel="stylesheet" href="css/bootstrap-3.3.6-dist/fonts/font-glyphicons.css"/>
+<link rel="stylesheet" href="js/jquery-ui-1.12.1.custom/jquery-ui.css"/>
+<link rel="stylesheet" href="js/tablesorter-master/css/theme.bootstrap.css"/>
+<link rel="stylesheet" href="css/main.css"/>
+    
+</head>
+<body>
+<div class="main_head"> <img alt="" src="image/logo_short.png"/> </div>
+<div class="sub_head">
+    <ul class="clear_fix">
+        <li><a class="active" href="#">数据透视</a></li>
+        <li><a href="#">数据配置</a></li>
+    </ul>
+</div>
+
+<div id="app" v-cloak>
+    <div class="ctr">
+        <span>市场洞察</span>
+    </div>
+
+    <div class="graph clear_fix">
+        <!--            condition start-->
+        <div class="condition">
+
+            <div class="condition_bar">
+                <div class="bar_head"> 通用维度 </div>
+                <div class="condition_list">
+                    <div v-for="(item,key) in conf.condition_list" v-bind:key="key" v-bind:data-col="item.col" v-bind:data-name="item.name" class="condition_ele">
+                        <span class="ele_txt">{{item.name}}</span> <span class="ele_ctr pull-right glyphicon glyphicon-align-justify"></span>
+                    </div>
+                </div>
+            </div>
+
+<!--
+            <div class="condition_bar">
+                <div class="bar_head"> 通用维度 </div>
+                <div class="condition_list">
+                    <div class="condition_ele"> <span class="ele_txt">年</span> <span class="ele_ctr pull-right glyphicon glyphicon-align-justify"></span> </div>
+                    <div class="condition_ele"> <span class="ele_txt">月</span> <span class="ele_ctr pull-right glyphicon glyphicon-align-justify"></span> </div>
+                    <div class="condition_ele"> <span class="ele_txt">市场</span> <span class="ele_ctr pull-right glyphicon glyphicon-align-justify"></span> </div>
+                </div>
+            </div>
+-->
+        </div>
+        <!--            condition end--> 
+        
+        <!--            stage start-->
+        <div class="stage">
+            <div class="controller">
+                <div class="row con_list">
+                    <div :class="['col-md-3','con_ele',{con_ele_dropped:conf.controller.where_list.class.con_ele_dropped}]">
+                        <div class="ele_h">筛选器</div>
+                        <div class="ele_b" id="where_list">
+                            <div class="condition_ele clear_fix" v-for="(item,key) in conf.controller.where_list.data" v-bind:key="key">
+                                <span class="ele_txt">{{item.name}}</span>
+                                <span class="ele_close pull-right" @click="removeEle(conf.controller.where_list,key)">×</span>
+                                <span class="ele_ctr pull-right glyphicon glyphicon-align-justify" @click="showFilterBar('where_list',item)"></span>
+                            </div>
+
+<!--
+                            <div class="condition_ele clear_fix">
+                                <span class="ele_txt">市场</span>
+                                <span class="ele_ctr pull-right glyphicon glyphicon-align-justify"></span>
+                            </div>
+-->
+
+                        </div>
+                    </div>
+                    <div :class="['col-md-3','con_ele',{con_ele_dropped:conf.controller.select_group_row.class.con_ele_dropped}]">
+                        <div class="ele_h">行</div>
+                        <div class="ele_b" id="select_group_row">
+                            <div class="condition_ele clear_fix" v-for="(item,key) in conf.controller.select_group_row.data" v-bind:key="key">
+                                <span class="ele_txt">{{item.name}}</span>
+                                <span class="ele_close pull-right" @click="removeEle(conf.controller.select_group_row,key)">×</span>
+                                <span class="ele_ctr pull-right glyphicon glyphicon-align-justify" @click="showFilterBar('select_group_row',item)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="['col-md-3','con_ele',{con_ele_dropped:conf.controller.select_group_col.class.con_ele_dropped}]">
+                        <div class="ele_h">列</div>
+                        <div class="ele_b" id="select_group_col">
+                           <div class="condition_ele clear_fix" v-for="(item,key) in conf.controller.select_group_col.data" v-bind:key="key">
+                                <span class="ele_txt">{{item.name}}</span>
+                                <span class="ele_close pull-right" @click="removeEle(conf.controller.select_group_col,key)">×</span>
+                                <span class="ele_ctr pull-right glyphicon glyphicon-align-justify" @click="showFilterBar('select_group_col',item)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="['col-md-3','con_ele',{con_ele_dropped:conf.controller.select_group_val.class.con_ele_dropped}]">
+                        <div class="ele_h">值</div>
+                        <div class="ele_b" id="select_group_val">
+                            <div class="condition_ele clear_fix" v-for="(item,key) in conf.controller.select_group_val.data" v-bind:key="key">
+                                <span class="ele_txt">{{item.name}}</span>
+                                <span class="ele_close pull-right" @click="removeEle(conf.controller.select_group_val,key)">×</span>
+                                <span class="ele_ctr pull-right glyphicon glyphicon-align-justify" @click="showFilterBar('select_group_val',item)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear_fix">
+<!--
+                    <span>
+                        <span style="font-size:14px;color: #8d8c92;">数据行限制</span>
+                        <select class="form-control form-control-sm input-sm" name="row_limit" style="width:100px;display: inline-block;">
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100" selected>100</option>
+                            <option value="200">200</option>
+                            <option value="500">500</option>
+                        </select>
+                    </span>
+-->
+                    <span class="btn btn-sm btn-info" style="float: right;width:240px;height:26px" @click="submit">查询</span>
+                </div>
+            </div>
+            <div class="showfront">
+                <table class="front_table" v-if="table.data.length">
+                    <thead>
+                        <tr>
+                            <th v-for="(item,i) in table.head" :key="i">
+                                <span>{{item.name}}</span>
+                                <!--<span class="glyphicon glyphicon-sort" style="padding-left:5px; font-size:10px;"></span>-->
+                            </th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr v-for="(item,i) in table.data" :key="i">
+                            <th v-for="(h_inf,i) in table.head" :key="i">{{item[h_inf.col]}}</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--            stage end--> 
+    </div>
+
+    <transition name="fade">
+        <filter_bar
+            v-bind:show="conf.plug.pop_template.show"
+            v-bind:item="conf.plug.pop_template.item"
+            v-on:close_this="closeFilterBar($event)"
+        >
+        </filter_bar>
+    </transition>
+    
+<!--
+    <transition name="alert_bar_fade">
+        <template v-if="conf.plug.alert_bar.show">
+            <div v-for="(str,i) in conf.plug.alert_bar.message" v-bind:class="['alert_bar', {'alert-danger':!conf.plug.alert_bar.type,'alert-success':conf.plug.alert_bar.type}]">
+                <div class="icon "><span v-bind:class="['glyphicon',{'glyphicon-remove-circle':!conf.plug.alert_bar.type,'glyphicon-ok-circle':conf.plug.alert_bar.type}]"></span></div>
+                <div class="message">{{str}}</div>
+            </div>
+        </template>
+    </transition>
+-->
+</div>
+
+<script src="./js/jQuery-v3.2.1.js"></script>
+<script src="./css/bootstrap-4.0.0-dist/js/bootstrap.js"></script>
+<script src="./js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+<script src="./js/tablesorter-master/js/jquery.tablesorter.js"></script>
+<script src="./js/axios-master/dist/axios.js"></script>
+<!--<script src="./js/vue.min.js"></script>-->
+<script src="js/vue-dev/dist/vue.js"></script>
+
+<script>
+    
+    var conditions = {
+        id:'aaaaaa',
+        conf:{
+            condition_list:[
+                {
+                    col:'date',
+                    name:'日期',
+                    //method:sum|left|avg|count
+                },
+                {
+                    col:'source',
+                    name:'市场',
+                },
+                {
+                    col:'shop_type',
+                    name:'渠道',
+                },
+                {
+                    col:'sales',
+                    name:'销售额',
+                    method:'sum'
+                },
+            ],
+            plug:{
+                pop_template: {
+                    show: false,
+                    item: {
+                        col: 'shop_type',
+                        name: '市场',
+                        filter:[]
+                    }
+                },
+                alert_bar:{
+                    show:true,
+                    type:false,
+                    message:['数据不完整','数据不完整']
+                }
+            },
+            controller:{
+                
+                where_list: {
+                    class:{con_ele_dropped:true},
+                    data:{
+                        date:{
+                            col:'date',
+                            name:'日期',
+                            //method:sum|left|avg|count
+                            filter:[1,2]
+                        },
+                        source:{
+                            col:'source',
+                            name:'市场',
+                            filter:[1]
+                        },
+                    }
+                },
+                select_group_row: {
+                    class:{con_ele_dropped:false},
+                    data:{}
+                },
+                select_group_col: {
+                    class:{con_ele_dropped:false},
+                    data:{}
+                },
+                select_group_val: {
+                    class:{con_ele_dropped:false},
+                    data:{}
+                },
+            }
+        },
+        table:{
+            status:{
+                'code':200,
+                'msg':'成功'
+            },
+            head:[
+                  {
+                   col:'shop_type',
+                   name:'市场'
+                  },
+                  {
+                   col:'bid',
+                   name:'品牌'
+                  },
+                  {
+                   col:'shop_type',
+                   name:'市场'
+                  },
+                  {
+                   col:'bid',
+                   name:'品牌'
+                  },
+                  {
+                   col:'shop_type',
+                   name:'市场'
+                  },
+                  {
+                   col:'bid',
+                   name:'品牌'
+                  },
+                  {
+                   col:'shop_type',
+                   name:'市场'
+                  },
+                  {
+                   col:'bid',
+                   name:'品牌'
+                  },
+                  {
+                   col:'sales',
+                   name:'销售额'
+                  },
+            ],
+            data: [
+//                {
+//                    shop_type: '天猫',
+//                    bid: '小米',
+//                    shop_type: '天猫',
+//                    bid: '小米',
+//                    shop_type: '天猫',
+//                    bid: '小米',
+//                    shop_type: '天猫',
+//                    bid: '小米',
+//                    sales: 1
+//                },
+                
+            ]
+        }
+    };
+    
+    Vue.component('filter_bar',{
+         props:['show','item'],
+         methods:{
+            selectAll:function(){
+                
+            }
+         },
+         template:`<div v-if="show" class='filter_bar'>
+                    <span class="filter_close" @click="$emit('close_this',false)">×</span>
+                    <div class="filter_head">{{item.name}}</div>
+                    <div class="filter_body">
+                        <div v-for="(val,i) in item.filter_list">
+                            <label><input type="checkbox" :value="val" v-model="item.filter"/>&nbsp; &nbsp; {{val}}</label>
+                        </div>
+                    </div>
+                    <label style="position:absolute; right:50px; bottom:10px;"><input type="checkbox" @click="selectAll" /></label>
+                    <span class="btn btn-sm btn-info" style="position:absolute; right:20px; bottom:10px; width: 50px; height: 26px;" @click="$emit('close_this',false)">确定</span>
+                 </div>`
+    });
+    
+    Vue.component('alert_bar',{
+        props: {
+           type:{
+               type: Boolean,
+               default: true,
+               validator: function(val){
+                   return [true,false].indexOf(val) !== -1;
+               }
+           },
+           message: String
+        },
+        template:`
+        
+        `
+    });
+    var vm = new Vue({
+        el: "#app",
+        data: conditions,
+        mounted: function(){
+            var that = this;
+            
+            $(".front_table").tablesorter();
+            $( ".condition_bar .condition_ele" ).draggable({
+                //connectToSortable: "#sortable",
+                zIndex: 2700,
+                helper: "clone",
+                revert: "invalid",
+                classes: {
+                    "ui-draggable-dragging": "width_limit"
+                },
+                start: function() {
+                },
+                drag: function() {
+                },
+                stop: function() {
+                }
+            });
+
+            $( ".con_ele" ).droppable({
+                accept: ".condition_ele",
+                cursor: "-webkit-grabbing",
+                classes: {
+                    "ui-droppable-active": "con_ele_selecting",
+                    //"ui-droppable-hover": "ui-state-hover",
+                },
+                drop: function( event, ui ) {
+                    //$( this ).addClass( "con_ele_dropped" );
+
+                    var data = ui.draggable.data();
+                    var target = $(event.target).children('.ele_b:first').attr('id');
+                    Vue.set(that.conf.controller[target]['data'],data.col,{col:data.col,name:data.name,filter:[]});
+
+                    //console.log(that.conf.controller[target])
+
+                    vm.conditionsStat(that.conf.controller[target]);
+                }
+            });
+        },
+        methods:{
+            submit: function(){
+                console.log(conditions.conf.controller);
+                var data = [];
+                
+                for(i=0; i < 50; i++){
+                    let item_tmp = {
+                        shop_type: '天猫',
+                        bid: '小米',
+                        shop_type: '天猫',
+                        bid: '小米',
+                        shop_type: '天猫',
+                        bid: '小米',
+                        shop_type: '天猫',
+                        bid: '小米',
+                        sales: i
+                    };
+                    data.push(item_tmp);
+                }
+                
+                Vue.set(this.table,'data',data);
+                
+                $(".front_table").tablesorter();
+            },
+            showFilterBar: function(con_ele_name,item){
+                item['filter_list'] = [1,2,3,4];
+                
+                Vue.set(this.conf.plug.pop_template,'item', item);
+                
+                console.log(this.conf.plug.pop_template.show)
+                if(this.conf.plug.pop_template.show){
+                   
+                Vue.set(this.conf.plug.pop_template,'show', false);
+                   }else{
+                       
+                Vue.set(this.conf.plug.pop_template,'show', true);
+                   }
+            },
+            closeFilterBar: function(action){
+                console.log(action);
+                
+                Vue.set(this.conf.plug.pop_template,'show', action);
+            },
+            ensureFilterBar:function(){
+                
+                Vue.set(this.conf.plug.pop_template,'show', false);
+            },
+            conditionsStat: function(target){
+                if(Object.keys(target['data']).length){
+                    Vue.set(target.class, 'con_ele_dropped', true);
+                }else{
+                    Vue.set(target.class, 'con_ele_dropped', false);
+                }
+            },
+            removeEle:function(target,key){
+                Vue.delete(target.data,key);
+
+                this.conditionsStat(target)
+            }
+        }
+    });
+</script>
+</body>
+</html>
