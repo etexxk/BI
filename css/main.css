@@ -334,6 +334,17 @@ html,body{
     left: 0;
     right: 0;
 }
+.showfront .show_h{
+    padding: 5px;
+    background: white;
+    margin-bottom: 5px;
+}
+.showfront .show_b{
+    height:auto;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
 .front_table{
     width: 100%;
 /*    border:1px solid #ccc;*/

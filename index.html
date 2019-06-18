@@ -189,7 +189,7 @@
                     item: {
                         col: 'shop_type',
                         name: '市场',
-                        filter:[]
+                        filter_list:[]
                     }
                 },
                 alert_bar:{
@@ -207,7 +207,15 @@
                             col:'date',
                             name:'日期',
                             //method:sum|left|avg|count
-                            filter:[1,2]
+                            filter:[{
+                                     key:1,
+                                     name:'aaa'
+                                    },
+                                    {
+                                     key:2,
+                                     name:'aaa'
+                                    },
+                                   ]
                         },
                         source:{
                             col:'source',
@@ -302,7 +310,7 @@
                     <div class="filter_head">{{item.name}}</div>
                     <div class="filter_body">
                         <div v-for="(val,i) in item.filter_list">
-                            <label><input type="checkbox" :value="val" v-model="item.filter"/>&nbsp; &nbsp; {{val}}</label>
+                            <label><input type="checkbox" :value="val" v-model="item.filter"/>&nbsp; &nbsp; {{val.name}}</label>
                         </div>
                     </div>
                     <label style="position:absolute; right:50px; bottom:10px;"><input type="checkbox" @click="selectAll" /></label>
@@ -390,14 +398,15 @@
                 $(".front_table").tablesorter();
             },
             showFilterBar: function(con_ele_name,item){
-                item['filter_list'] = [1,2,3,4];
+                // item['filter_list'] = [1,2,3,4];
+                item['filter_list'] = [{key:1,name:'aaa'},{key:2,name:'bbb'},{key:3,name:'ccc'},{key:4,name:'ddd'}];
                 
                 Vue.set(this.conf.plug.pop_template,'item', item);
                 
                 Vue.set(this.conf.plug.pop_template,'show', true);
             },
             closeFilterBar: function(action){
-                console.log(action);
+                // console.log(action);
                 
                 Vue.set(this.conf.plug.pop_template,'show', action);
             },

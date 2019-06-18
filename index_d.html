@@ -121,22 +121,26 @@
                 </div>
             </div>
             <div class="showfront">
-                <table class="front_table" v-if="table.data.length">
-                    <thead>
-                        <tr>
-                            <th v-for="(item,i) in table.head" :key="i">
-                                <span>{{item.name}}</span>
-                                <!--<span class="glyphicon glyphicon-sort" style="padding-left:5px; font-size:10px;"></span>-->
-                            </th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        <tr v-for="(item,i) in table.data" :key="i">
-                            <th v-for="(h_inf,i) in table.head" :key="i">{{item[h_inf.col]}}</th>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="show_h clear_fix"><span title="下载" class="btn btn-sm btn-info pull-right glyphicon glyphicon-download"></span></div>
+
+                <div class="show_b">
+                    <table class="front_table" v-if="table.data.length">
+                        <thead>
+                            <tr>
+                                <th v-for="(item,i) in table.head" :key="i">
+                                    <span>{{item.name}}</span>
+                                    <!--<span class="glyphicon glyphicon-sort" style="padding-left:5px; font-size:10px;"></span>-->
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr v-for="(item,i) in table.data" :key="i">
+                                <th v-for="(h_inf,i) in table.head" :key="i">{{item[h_inf.col]}}</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                
             </div>
         </div>
         <!--            stage end--> 
