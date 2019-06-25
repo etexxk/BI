@@ -267,7 +267,7 @@ html,body{
     top: -8px;
 }
 #ctr_list_ele_key::before,#ctr_list_ele_key::after{
-    left: 232px;
+    left: 225px;
     top: -8px;
 }
 #ctr_list_ele_name::after,#ctr_list_ele_key::after{
@@ -308,7 +308,6 @@ html,body{
 .filter_head>.btns{
     display: flex;
     justify-content: space-between;
-    
 }
 .filter_head>.btns>span{
     width: 100px;
@@ -437,7 +436,14 @@ html,body{
     background: #eee;
 }
 /*drop_list end*/
-
+.filter_btn_clear{
+    padding-right:10px;
+    text-align: right;
+}
+.filter_btn_clear>span{
+    cursor: pointer;
+    text-decoration: underline;
+}
 /*alert_bar*/
 .alert_bar{
     position: fixed;
