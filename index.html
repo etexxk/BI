@@ -120,22 +120,25 @@
                 </div>
             </div>
             <div class="showfront">
-                <table class="front_table" v-if="table.data.length">
-                    <thead>
-                        <tr>
-                            <th v-for="(item,i) in table.head" :key="i">
-                                <span>{{item.name}}</span>
-                                <!--<span class="glyphicon glyphicon-sort" style="padding-left:5px; font-size:10px;"></span>-->
-                            </th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        <tr v-for="(item,i) in table.data" :key="i">
-                            <th v-for="(h_inf,i) in table.head" :key="i">{{item[h_inf.col]}}</th>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="show_h"></div>
+                <div class="show_b">
+                    <table class="front_table" v-if="table.data.length">
+                        <thead>
+                            <tr>
+                                <th v-for="(item,i) in table.head" :key="i">
+                                    <span>{{item.name}}</span>
+                                    <!--<span class="glyphicon glyphicon-sort" style="padding-left:5px; font-size:10px;"></span>-->
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr v-for="(item,i) in table.data" :key="i">
+                                <th v-for="(h_inf,i) in table.head" :key="i">{{item[h_inf.col]}}</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <!--            stage end--> 
@@ -157,9 +160,11 @@
 <script src="./js/tablesorter-master/dist/js/jquery.tablesorter.js"></script>
 <!--<script src="./js/vue.min.js"></script>-->
 <script src="js/vue-dev/dist/vue.js"></script>
+<script src="js/tooltip.min.js"></script>
+<script src="lib/drop_bar.js"></script>
+<script src="lib/filter_bar.js"></script>
 
-<script>
-    
+<script type="module">    
     var conditions = {
         id:'aaaaaa',
         conf:{
@@ -206,21 +211,31 @@
                         date:{
                             col:'date',
                             name:'日期',
-                            //method:sum|left|avg|count
+                            filterOption:{
+                                where:'some string',
+                                orderby:{
+                                    by:'sales/num',
+                                    sort:'dec/asc'
+                                },
+                                limit:100
+                            },
                             filter:[{
                                      key:1,
                                      name:'aaa'
                                     },
                                     {
                                      key:2,
-                                     name:'aaa'
+                                     name:'bbb'
                                     },
                                    ]
                         },
                         source:{
                             col:'source',
                             name:'市场',
-                            filter:[1]
+                            filter:[{
+                                     key:1,
+                                     name:'aaa'
+                                    },]
                         },
                     }
                 },
@@ -298,36 +313,17 @@
         }
     };
     
-    Vue.component('filter_bar',{
-         props:['show','item'],
-         methods:{
-            selectAll:function(){
-                
-            }
-         },
-         template:`<div v-if="show" class='filter_bar'>
-                    <span class="filter_close" @click="$emit('close_this',false)">×</span>
-                    <div class="filter_head">{{item.name}}</div>
-                    <div class="filter_body">
-                        <div v-for="(val,i) in item.filter_list">
-                            <label><input type="checkbox" :value="val" v-model="item.filter"/>&nbsp; &nbsp; {{val.name}}</label>
-                        </div>
-                    </div>
-                    <label style="position:absolute; right:50px; bottom:10px;"><input type="checkbox" @click="selectAll" /></label>
-                    <span class="btn btn-sm btn-info" style="position:absolute; right:20px; bottom:10px; width: 50px; height: 26px;" @click="$emit('close_this',false)">确定</span>
-                 </div>`
-    });
     
     Vue.component('alert_bar',{
         props: {
            type:{
-               type: Boolean,
+               type: 'Boolean',
                default: true,
                validator: function(val){
                    return [true,false].indexOf(val) !== -1;
                }
            },
-           message: String
+           message: 'String'
         },
         template:`
         
@@ -338,7 +334,7 @@
         data: conditions,
         mounted: function(){
             var that = this;
-            
+
             $(".front_table").tablesorter();
             $( ".condition_bar .condition_ele" ).draggable({
                 //connectToSortable: "#sortable",
@@ -381,7 +377,7 @@
                 console.log(conditions.conf.controller);
                 var data = [];
                 
-                for(i=0; i < 50; i++){
+                for(var i=0; i < 50; i++){
                     let item_tmp = {
                         shop_type: '天猫',
                         bid: '小米',
