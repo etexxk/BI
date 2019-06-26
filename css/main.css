@@ -173,6 +173,9 @@ html,body{
 .con_ele{
     height: 180px;
 }
+.con_ele .condition_ele{
+    cursor: default;
+}
 .con_ele .ele_h{
     position: relative;
     padding: 5px;
